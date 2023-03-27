@@ -1,0 +1,213 @@
+﻿Imports System.Text
+Public Class ClsGeneral
+    Public Shared TANGGAL1, TANGGAL2 As DateTime
+    Public Shared TAHUN, BULAN, TGL As Integer
+
+    Public Shared Function get_last_date(ByVal tanggal As DateTime) As Date
+        Dim month_int As Integer = Month(DateAdd("m", 1, tanggal)) ' bulan + 1
+        Dim year_int As Integer = Year(DateAdd("m", 1, tanggal))
+        Dim Date_result As Date = DateSerial(year_int, month_int, 1) ' setting jadi tanggal 1 awal bulan berikutnya
+        'get_last_date = "9/21/2021 12:00:00 AM"
+        get_last_date = DateAdd("d", -1, Date_result) 'dikurangi 1 hari
+    End Function
+
+    Public Shared Function status_email(ByVal current_date As DateTime, ByVal JenisLaporan As String)
+
+        'DIBAWAH JAM 08.00 MASIH MENGGUNAKAN TANGGAL KEMARIN
+        If Int32.Parse(current_date.ToString("HHmm")) < 800 Then
+            current_date = current_date.AddDays(-1)
+        End If
+
+        Dim result_string As String = ""
+
+        Dim query As StringBuilder = New StringBuilder()
+
+        query.AppendLine(" select ")
+        query.AppendLine("     date ")
+        query.AppendLine("     ,status_email_amount ")
+        query.AppendLine("     ,status_email_qty ")
+        query.AppendLine(" from ")
+        query.AppendLine("     ad_dis_rtjn_sum_qty_amount ")
+        query.AppendLine(" where ")
+        query.AppendLine("     date = '" & current_date.ToString("yyyy-MM-dd") & "' ")
+        query.AppendLine(" ")
+
+        Dim dt As New System.Data.DataTable
+        dt = ClsConfig.ExecuteQuery(query.ToString(), ClsConfig.IPServer_ADDONS)
+        query.Length = 0
+        query.Capacity = 0
+        If dt.Rows.Count > 0 Then
+            If JenisLaporan = "qty_amount" Then
+                result_string = dt(0)("status_email_amount").ToString()
+            Else
+                result_string = dt(0)("status_email_qty").ToString()
+            End If
+        End If
+        Return result_string
+
+    End Function
+
+    Public Shared Function last_send_email(ByVal current_date As DateTime, ByVal JenisLaporan As String)
+
+        'DIBAWAH JAM 08.00 MASIH MENGGUNAKAN TANGGAL KEMARIN
+        If Int32.Parse(current_date.ToString("HHmm")) < 800 Then
+            current_date = current_date.AddDays(-1)
+        End If
+
+        Dim result_string As String = "0"
+
+        Dim query As StringBuilder = New StringBuilder()
+        query.AppendLine(" select ")
+        query.AppendLine("     case when datetime_email_amount is null then '0' else format(datetime_email_amount, 'HH') end as JAM_amount, ")
+        query.AppendLine("     case when datetime_email_qty is null then '0' else format(datetime_email_qty, 'HH') end as JAM_qty ")
+        query.AppendLine(" from ")
+        query.AppendLine("     ad_dis_rtjn_sum_qty_amount ")
+        query.AppendLine(" where ")
+        query.AppendLine("     date = '" & current_date.ToString("yyyy-MM-dd") & "' ")
+        query.AppendLine(" ")
+
+        Dim dt As New System.Data.DataTable
+        dt = ClsConfig.ExecuteQuery(query.ToString(), ClsConfig.IPServer_ADDONS)
+        query.Length = 0
+        query.Capacity = 0
+        If dt.Rows.Count > 0 Then
+            If JenisLaporan = "qty_amount" Then
+                result_string = dt(0)("JAM_amount").ToString()
+            Else
+                result_string = dt(0)("JAM_qty").ToString()
+            End If
+        End If
+        Return result_string
+
+    End Function
+
+    Public Shared Function find_target_print_qty(ByVal target_date As Date) As String
+        Dim result_string As String = ""
+
+        Dim query As StringBuilder = New StringBuilder()
+        query.AppendLine(" select ")
+        query.AppendLine("     target_date ")
+        query.AppendLine("     ,isnull(target_print_qty,0) target_print_qty ")
+        query.AppendLine(" from ")
+        query.AppendLine("     ad_dis_rtjn_sum_qty_amount_target ")
+        query.AppendLine(" where ")
+        query.AppendLine("     target_date = '" & target_date.ToString("yyyy-MM-dd") & "' ")
+        query.AppendLine(" ")
+
+        Dim dt As New System.Data.DataTable
+        dt = ClsConfig.ExecuteQuery(query.ToString(), ClsConfig.IPServer_ADDONS)
+        query.Length = 0
+        query.Capacity = 0
+        If dt.Rows.Count > 0 Then
+            result_string = dt(0)("target_print_qty").ToString()
+        End If
+        Return result_string
+    End Function
+
+    Public Shared Function find_target_qty(ByVal target_date As Date) As String
+        Dim result_string As String = ""
+
+        Dim query As StringBuilder = New StringBuilder()
+        query.AppendLine(" select ")
+        query.AppendLine("     target_date ")
+        query.AppendLine("     ,(isnull(target_qty_jam_ke_1,0) + ")
+        query.AppendLine("     isnull(target_qty_jam_ke_2,0) + ")
+        query.AppendLine("     isnull(target_qty_jam_ke_3,0) + ")
+        query.AppendLine("     isnull(target_qty_jam_ke_4,0) + ")
+        query.AppendLine("     isnull(target_qty_jam_ke_5,0) + ")
+        query.AppendLine("     isnull(target_qty_jam_ke_6,0) + ")
+        query.AppendLine("     isnull(target_qty_jam_ke_7,0) + ")
+        query.AppendLine("     isnull(target_qty_jam_ke_8,0) + ")
+        query.AppendLine("     isnull(target_qty_jam_ke_9,0) + ")
+        query.AppendLine("     isnull(target_qty_jam_ke_10,0) + ")
+        query.AppendLine("     isnull(target_qty_jam_ke_11,0) + ")
+        query.AppendLine("     isnull(target_qty_jam_ke_12,0) + ")
+        query.AppendLine("     isnull(target_qty_jam_ke_13,0) + ")
+        query.AppendLine("     isnull(target_qty_jam_ke_14,0) + ")
+        query.AppendLine("     isnull(target_qty_jam_ke_17,0) + ")
+        query.AppendLine("     isnull(target_qty_jam_ke_18,0) + ")
+        query.AppendLine("     isnull(target_qty_jam_ke_19,0) + ")
+        query.AppendLine("     isnull(target_qty_jam_ke_20,0) + ")
+        query.AppendLine("     isnull(target_qty_jam_ke_21,0) + ")
+        query.AppendLine("     isnull(target_qty_jam_ke_22,0)) target_total_qty_per_jam ")
+        query.AppendLine(" from ")
+        query.AppendLine("     ad_dis_rtjn_sum_qty_amount_target ")
+        query.AppendLine(" where ")
+        query.AppendLine("     target_date = '" & target_date.ToString("yyyy-MM-dd") & "' ")
+        query.AppendLine(" ")
+
+        Dim dt As New System.Data.DataTable
+        dt = ClsConfig.ExecuteQuery(query.ToString(), ClsConfig.IPServer_ADDONS)
+        query.Length = 0
+        query.Capacity = 0
+        If dt.Rows.Count > 0 Then
+            result_string = dt(0)("target_total_qty_per_jam").ToString()
+        End If
+        Return result_string
+    End Function
+
+    Public Shared Function find_target_amount(ByVal target_date As Date) As String
+        Dim result_string As String = ""
+
+        Dim query As StringBuilder = New StringBuilder()
+        query.AppendLine(" select ")
+        query.AppendLine("     target_date ")
+        query.AppendLine("     ,(isnull(target_amount_jam_ke_1,0) + ")
+        query.AppendLine("     isnull(target_amount_jam_ke_2,0) + ")
+        query.AppendLine("     isnull(target_amount_jam_ke_3,0) + ")
+        query.AppendLine("     isnull(target_amount_jam_ke_4,0) + ")
+        query.AppendLine("     isnull(target_amount_jam_ke_5,0) + ")
+        query.AppendLine("     isnull(target_amount_jam_ke_6,0) + ")
+        query.AppendLine("     isnull(target_amount_jam_ke_7,0) + ")
+        query.AppendLine("     isnull(target_amount_jam_ke_8,0) + ")
+        query.AppendLine("     isnull(target_amount_jam_ke_9,0) + ")
+        query.AppendLine("     isnull(target_amount_jam_ke_10,0) + ")
+        query.AppendLine("     isnull(target_amount_jam_ke_11,0) + ")
+        query.AppendLine("     isnull(target_amount_jam_ke_12,0) + ")
+        query.AppendLine("     isnull(target_amount_jam_ke_13,0) + ")
+        query.AppendLine("     isnull(target_amount_jam_ke_14,0) + ")
+        query.AppendLine("     isnull(target_amount_jam_ke_17,0) + ")
+        query.AppendLine("     isnull(target_amount_jam_ke_18,0) + ")
+        query.AppendLine("     isnull(target_amount_jam_ke_19,0) + ")
+        query.AppendLine("     isnull(target_amount_jam_ke_20,0) + ")
+        query.AppendLine("     isnull(target_amount_jam_ke_21,0) + ")
+        query.AppendLine("     isnull(target_amount_jam_ke_22,0)) target_total_amount_per_jam ")
+        query.AppendLine(" from ")
+        query.AppendLine("     ad_dis_rtjn_sum_qty_amount_target ")
+        query.AppendLine(" where ")
+        query.AppendLine("     target_date = '" & target_date.ToString("yyyy-MM-dd") & "' ")
+        query.AppendLine(" ")
+
+        Dim dt As New System.Data.DataTable
+        dt = ClsConfig.ExecuteQuery(query.ToString(), ClsConfig.IPServer_ADDONS)
+        query.Length = 0
+        query.Capacity = 0
+        If dt.Rows.Count > 0 Then
+            result_string = dt(0)("target_total_amount_per_jam").ToString()
+        End If
+        Return result_string
+    End Function
+
+    Public Shared Function find_shift_group(ByVal target_date As Date, ByVal shift As Int32) As String
+        Dim result_string As String = ""
+        Dim query As StringBuilder = New StringBuilder()
+        query.AppendLine(" select ")
+        query.AppendLine("     shift_date, shift, grp ")
+        query.AppendLine(" from ")
+        query.AppendLine("     Z_RT_data_group ")
+        query.AppendLine(" where ")
+        query.AppendLine("     shift_date = '" & target_date.ToString("yyyy-MM-dd") & "' ")
+        query.AppendLine("     and shift = " & shift.ToString() & " ")
+        query.AppendLine(" ")
+
+        Dim dt As New System.Data.DataTable
+        dt = ClsConfig.ExecuteQuery(query.ToString(), ClsConfig.IPServer_RTJN_PRD)
+        query.Length = 0
+        query.Capacity = 0
+        If dt.Rows.Count > 0 Then
+            result_string = dt(0)("grp").ToString()
+        End If
+        Return result_string
+    End Function
+
+End Class

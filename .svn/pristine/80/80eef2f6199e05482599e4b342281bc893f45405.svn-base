@@ -1,0 +1,54 @@
+###setting database
+[DATABASE]
+TYPE=MAIN DATABASE
+RTJN=Data Source=192.168.0.3;Connection Timeout=1000;Initial Catalog=RTJN_PRD;User Id=sa;Password=tpics;Integrated Security=false
+TPICS=Data Source=192.168.0.4;Connection Timeout=1000;Initial Catalog=TxDTIPRD;User Id=sa;Password=tpics;Integrated Security=false
+ADDONS=Data Source=192.168.0.10;Connection Timeout=1000;Initial Catalog=TxDTIPRD_DEV;User Id=sa;Password=tpics;Integrated Security=false
+
+;TYPE=TESTING DATABASE
+;TPICS=Data Source=192.168.0.4;Initial Catalog=TxDTIPRD_TEST;User Id=sa;Password=tpics;Integrated Security=false
+;RTJN=Data Source=192.168.0.3;Initial Catalog=RTJN_DEV2;User Id=sa;Password=tpics;Integrated Security=false
+
+;TYPE=LOCAL DATABASE
+;TPICS=Data Source=localhost;Initial Catalog=TxDTIPRD;User Id=sa;Password=tpics;Integrated Security=false
+;RTJN=Data Source=localhost;Initial Catalog=RTJN_PRD;User Id=sa;Password=tpics;Integrated Security=false
+
+###setting email server
+[EMAIL]
+email_from_alias = DoNotReply@dmcti.co.id
+email_nama = donotreply@dmcti.co.id
+email_password = iTem!@2018
+email_server_smtp = smtp.office365.com
+email_server_port = 587
+;subject_email = Realtime Production
+subject_email = Realtime Production Trial
+tls = 3072
+
+###Lokasi File Ekspor
+[FILE]
+nama_folder_log_error = C:\LogErrorAddonProgram
+nama_file_txt_log_error = log_error
+nama_file_template_qty = template_qty_sum
+nama_file_template_amount = template_qty_amount_sum
+nama_file_lampiran_email_qty = Realtime_Production(qty)
+nama_file_lampiran_email_amount = Realtime_Production(qty_amount)
+lokasi_simpan_file_qty = \\192.168.0.10\txsv\_Reports\Qty_RTJN
+lokasi_simpan_file_amount = \\192.168.0.10\txsv\_Reports\Qty_and_Amount_RTJN
+
+###Monitoring Mail Sender Qty 
+[MONITORING_QTY]
+nama_file_template_monitoring_qty = template_monitoring_qty
+nama_file_lampiran_email_monitoring_qty = monitoring_qty
+lokasi_simpan_file_monitoring_qty = \\192.168.0.10\txsv\_Reports\Qty_RTJN\Monitoring_qty
+subject_email_monitoring_qty = Monitoring Realtime Production (Qty)
+;email_monitoring_mail_sender_qty = 'ikbal@dmcti.co.id','halim@dmcti.co.id','sulton@dmcti.co.id'
+email_monitoring_mail_sender_qty = 'halim@dmcti.co.id'
+
+###Monitoring Mail Sender Amount
+[MONITORING_AMOUNT]
+nama_file_template_monitoring_amount = template_monitoring_amount
+nama_file_lampiran_email_monitoring_amount = monitoring_amount
+lokasi_simpan_file_monitoring_amount = \\192.168.0.10\txsv\_Reports\Qty_and_Amount_RTJN\Monitoring_amount
+subject_email_monitoring_amount = Monitoring Realtime Production (Amount)
+;email_monitoring_mail_sender_amount = 'ikbal@dmcti.co.id','halim@dmcti.co.id','sulton@dmcti.co.id'
+email_monitoring_mail_sender_amount = 'halim@dmcti.co.id'

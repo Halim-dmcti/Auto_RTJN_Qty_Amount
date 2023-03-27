@@ -1,0 +1,16 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "2942cdf2-b45b-418a-bb30-7bbe788c0848": {
+      "ProjectGuid": "2942cdf2-b45b-418a-bb30-7bbe788c0848",
+      "DisplayName": "Auto_RTJN_Qty_Amount",
+      "ColorIndex": 0
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
+    }
+  },
+  "NextColorIndex": 1
+}
